@@ -1,0 +1,24 @@
+.footer {
+    padding: var(--spacing-md) var(--spacing-lg);
+    background-color: var(--color-gray);
+    font-family: var(--font-mono);
+    border-radius: var(--radius-lg);
+    margin: var(--spacing-sm);
+    font-size: var(--text-xs);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.list {
+    display: flex;
+    gap: var(--spacing-lg);
+}
+
+.list span {
+    cursor: pointer;
+    transition: 0.5s linear;
+}
+
+.list span:hover {
+    opacity: 0.5;
+}

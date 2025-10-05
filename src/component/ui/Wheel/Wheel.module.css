@@ -1,0 +1,32 @@
+.wheel {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.feature_container {
+    height: 100%;
+    width: 100%;
+    background-color: transparent;
+    pointer-events: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.feature_block {
+    position: absolute;
+    width: calc(var(--spacing-xs)*42);
+    background-color: var(--color-gray);
+    font-family: var(--font-mono);
+    border-radius: calc(var(--radius-lg) * 2);
+    text-align: center;
+    padding: var(--spacing-sm);
+    font-size: var(--text-xs);
+    line-height: var(--text-xs--line-height);
+}
+
