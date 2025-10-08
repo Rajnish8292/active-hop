@@ -1,2 +1,2 @@
-export const EASE = "sine.inOut";
+export const EASE = "expo.out";
 export const DURATION = 2;
