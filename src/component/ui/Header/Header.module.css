@@ -8,4 +8,5 @@
     padding: var(--spacing-md) var(--spacing-lg);
     pointer-events: auto;
     position: relative;
+    overflow: hidden;
 }

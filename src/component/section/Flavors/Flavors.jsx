@@ -20,7 +20,7 @@ export default function Flavors() {
       scrollTrigger: {
         trigger: sectionRef.current,
         start: "top top",
-        end: "+=300%",
+        end: "+=400%",
         pin: true,
         scrub: true,
         onUpdate: (self) => {
@@ -124,8 +124,7 @@ export default function Flavors() {
     });
 
     tl.to(sectionRef.current.children, {
-      yPercent: -50,
-      ease: EASE,
+      yPercent: -100,
     });
   }, [sectionRef?.current]);
 

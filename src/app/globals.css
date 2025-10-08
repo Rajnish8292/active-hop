@@ -45,7 +45,7 @@
     --font-weight-bold: 700;
     --font-weight-extrabold: 800;
     --radius-lg: .5rem;
-    --radius-xl: .75rem;
+    --radius-xl: 1rem;
     --font-sans: "sora";
     --font-mono: "lekton";
     --color-rad: #bccc32;
@@ -53,7 +53,7 @@
     --color-trail: #7b628f;
     --color-gray-200: oklch(.928 .006 264.531);
     --color-gray: color-mix(in oklab,var(--color-gray-200)50%,transparent);
-    --blur-2xl: 40px;
+    --blur-2xl: 30px;
     --tw-backdrop-blur:blur(var(--blur-2xl))
 }
 

@@ -2,21 +2,21 @@ import Button from "../Button/Button";
 import styles from "./Product.module.css";
 import Image from "next/image";
 import { motion } from "motion/react";
-import { DURATION } from "@/app/utils/ease";
+import { DURATION, EXIT_DURATION } from "@/app/utils/ease";
 export default function Product() {
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      transition={{ duration: DURATION }}
+      transition={{ duration: EXIT_DURATION }}
       style={{ display: "flex", flexDirection: "column" }}
     >
       <motion.div
         initial={{ y: 50 }}
         animate={{ y: 0 }}
         exit={{ y: 50 }}
-        transition={{ duration: DURATION }}
+        transition={{ duration: EXIT_DURATION }}
         className={styles.product_container}
         style={{}}
       >

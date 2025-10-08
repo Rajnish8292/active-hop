@@ -2,7 +2,12 @@ import styles from "./Nav.module.css";
 import Logo from "../Logo/Logo";
 import { motion } from "motion/react";
 import { delay } from "motion";
-export default function Nav({ productClickHandler }) {
+export default function Nav({
+  productClickHandler,
+  subscribeClickHandler,
+  aboutClickHandler,
+  cartClickHandler,
+}) {
   const nav_item_initial = {
     opacity: 0,
   };
@@ -10,7 +15,7 @@ export default function Nav({ productClickHandler }) {
     opacity: 1,
   };
   const nav_item_transition = {
-    delay: 2.25,
+    delay: 1.75,
     duration: 0.5,
   };
 
@@ -48,7 +53,12 @@ export default function Nav({ productClickHandler }) {
             PRODUCTS
           </motion.p>
         </div>
-        <div className={styles.nav_item}>
+        <div
+          className={styles.nav_item}
+          onClick={() => {
+            aboutClickHandler();
+          }}
+        >
           <motion.p
             initial={nav_item_initial}
             animate={nav_item_animate}
@@ -79,7 +89,12 @@ export default function Nav({ productClickHandler }) {
           margin: "0 var(--spacing-md)",
         }}
       >
-        <div className={styles.nav_item}>
+        <div
+          className={styles.nav_item}
+          onClick={() => {
+            subscribeClickHandler();
+          }}
+        >
           <motion.p
             initial={nav_item_initial}
             animate={nav_item_animate}
@@ -88,13 +103,18 @@ export default function Nav({ productClickHandler }) {
             SUBSCRIBE
           </motion.p>
         </div>
-        <div className={styles.nav_item}>
+        <div
+          className={styles.nav_item}
+          onClick={() => {
+            cartClickHandler();
+          }}
+        >
           <motion.p
             initial={nav_item_initial}
             animate={nav_item_animate}
             transition={nav_item_transition}
           >
-            SUBSCRIBE
+            CART (0)
           </motion.p>
         </div>
       </div>

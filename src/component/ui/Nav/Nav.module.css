@@ -5,7 +5,7 @@
     font-size: var(--text-sm);
     line-height: var(--text-xs--line-height);
     opacity: 1;
-    padding: var(--spacing-md);
+    padding: var(--spacing-md) 0;
 }
 
 .nav_item {
