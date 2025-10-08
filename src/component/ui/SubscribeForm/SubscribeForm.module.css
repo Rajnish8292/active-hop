@@ -1,0 +1,22 @@
+.form {
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    line-height: var(--text-sm--line-height);
+    padding: var(--spacing-md);
+}
+
+.form input {
+    padding: calc(var(--spacing-md) * 0.7);
+    border-radius: 60px;
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    line-height: var(--text-sm--line-height);
+    width: 100%;
+    margin-bottom: var(--spacing-md);
+    border: 0.5px solid black;
+    outline: none;
+}
+
+.form input:focus {
+    outline: 1px solid black;
+}

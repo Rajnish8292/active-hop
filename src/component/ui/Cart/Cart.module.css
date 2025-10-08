@@ -1,0 +1,4 @@
+.cart {
+    padding: var(--spacing-md);
+    margin-top: var(--spacing-lg);
+}

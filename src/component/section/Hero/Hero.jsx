@@ -32,14 +32,14 @@ export default function Hero() {
       scrollTrigger: {
         trigger: heroRef.current,
         start: "top top",
-        end: "bottom top",
+        end: "+=200%",
         scrub: true,
         pin: true,
         onUpdate: (self) => {
           gsap.set(heroRef.current.children[0], {
             borderRadius: `${20 + 980 * self.progress}px`,
             ease: EASE,
-            duration: DURATION,
+            duration: DURATION * 2,
           });
         },
       },
