@@ -21,11 +21,11 @@ export default function Feature() {
       <Wheel />
       <div className={styles.detail}>
         <p>
-          Activehop has been crafted with the goal of "the rest is zero". 0
-          sugars, carbohydrates, fats and alcohol. The ingredients chosen are
-          all of natural origin, without colorants to make the experience even
-          purer and more genuine. All elements are naturally lactose-free and
-          vegan friendly.
+          Activehop has been crafted with the goal of &quot;the rest is
+          zero&quot;. 0 sugars, carbohydrates, fats and alcohol. The ingredients
+          chosen are all of natural origin, without colorants to make the
+          experience even purer and more genuine. All elements are naturally
+          lactose-free and vegan friendly.
         </p>
       </div>
     </section>
