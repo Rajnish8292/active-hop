@@ -8,6 +8,7 @@
     line-height: 1.2;
     font-weight: var(--font-weight-bold);
     color: var(--color-gray);
+    transition: 0.5s;
 
 }
 .marquee_container {

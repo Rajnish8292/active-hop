@@ -1,20 +1,38 @@
 "use client";
 import Wheel from "@/component/ui/Wheel/Wheel";
 import styles from "./Feature.module.css";
-import { useRef } from "react";
+import { useCallback, useRef } from "react";
 import { useGSAP } from "@gsap/react";
 import ScrollTrigger from "gsap/ScrollTrigger";
+import { useRecoilState } from "recoil";
+import { navigation_atom } from "@/store/navigation_atom";
 export default function Feature() {
   const sectionRef = useRef(null);
+  const [currentSection, setCurrentSection] = useRecoilState(navigation_atom);
+  const hasTriggered = useRef(false);
+  const enterHandler = useCallback(() => {
+    if (!hasTriggered.current) {
+      setCurrentSection("Target zero");
+      hasTriggered.current = true;
+    }
+  }, []);
+
+  const leaveHandler = useCallback(() => {
+    setCurrentSection("");
+    hasTriggered.current = false;
+  }, []);
   useGSAP(() => {
-    if (!sectionRef?.current) return;
     ScrollTrigger.create({
       trigger: sectionRef.current,
       start: "top top",
       end: "+=400%",
       pin: true,
+      onEnter: enterHandler,
+      onLeave: leaveHandler,
+      onEnterBack: enterHandler,
+      onLeaveBack: leaveHandler,
     });
-  }, [sectionRef?.current]);
+  }, []);
 
   return (
     <section className={styles.feature} ref={sectionRef}>
