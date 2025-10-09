@@ -1,6 +1,7 @@
 import Header from "@/component/ui/Header/Header";
 import "./globals.css";
 import SmoothScroll from "@/component/SmoothScroll/SmoothScroll";
+import Bottle from "@/component/ui/3dBottle/3dBottle";
 
 export const metadata = {
   title: "Active hop",
@@ -13,6 +14,7 @@ export default function RootLayout({ children }) {
       <body>
         {/* <Header /> */}
         <Header />
+        <Bottle />
         <SmoothScroll>{children}</SmoothScroll>
       </body>
     </html>

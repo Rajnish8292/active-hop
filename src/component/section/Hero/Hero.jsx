@@ -2,39 +2,37 @@
 import PixelDistortion from "@/component/ui/PixelDistortion/PixelDistortion";
 import styles from "./Hero.module.css";
 import { useGSAP } from "@gsap/react";
-import { useRef } from "react";
+import { useCallback, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { DURATION, EASE } from "@/app/utils/ease";
+import { useRecoilState } from "recoil";
+import { navigation_atom } from "@/store/navigation_atom";
 
 gsap.registerPlugin(ScrollTrigger);
 
 export default function Hero() {
   const heroRef = useRef(null);
   const textRef = useRef(null);
+  const [currentSection, setCurrentSection] = useRecoilState(navigation_atom);
+  const enterHandler = useCallback(() => {
+    setCurrentSection("Outdoor Inside");
+  });
+  const leaveHandler = useCallback(() => {
+    setCurrentSection("");
+  });
   useGSAP(() => {
-    if (!heroRef?.current || !textRef?.current) return;
-
-    // const st = ScrollTrigger.create({
-    //   trigger: heroRef.current,
-    //   start: "top top",
-    //   end: "bottom top",
-    //   pin: true,
-    //   scrub: true,
-    //   onUpdate: (self) => {
-    //     gsap.set(heroRef.current.children, {
-    //       borderRadius: `${20 + 990 * self.progress}px`,
-    //     });
-    //   },
-    // });
-
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: heroRef.current,
         start: "top top",
-        end: "+=200%",
+        end: "+=150%",
         scrub: true,
         pin: true,
+        onEnter: enterHandler,
+        onEnterBack: enterHandler,
+        onLeave: leaveHandler,
+        onLeaveBack: leaveHandler,
         onUpdate: (self) => {
           gsap.set(heroRef.current.children[0], {
             borderRadius: `${20 + 980 * self.progress}px`,
@@ -59,7 +57,7 @@ export default function Hero() {
       },
       0.5
     );
-  }, [heroRef?.current, textRef?.current]);
+  }, []);
   return (
     <section ref={heroRef} className={styles.hero_section}>
       <PixelDistortion />

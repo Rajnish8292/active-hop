@@ -1,0 +1,16 @@
+.navigation {
+    position: fixed;
+    top: var(--spacing-lg);
+    left: var(--spacing-lg);
+    z-index: 980;
+    padding: var(--spacing-md);
+    font-size: var(--text-sm);
+    font-family: var(--font-mono);
+    line-height: var(--text-sm--line-height);
+    border-radius: var(--radius-lg);
+    display: flex;
+}
+
+.navigation div {
+    margin-left: var(--spacing-sm);
+}
