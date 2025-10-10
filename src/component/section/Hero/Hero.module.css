@@ -20,7 +20,7 @@
     background-color:transparent;
     display: flex;
     justify-content: center;
-    align-items: end;
+    align-items: flex-end;
     pointer-events: none;
 }
 
