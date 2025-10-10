@@ -13,7 +13,7 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body>
         {/* <Header /> */}
-        <Header />
+        {/* <Header /> */}
         <Bottle />
         <SmoothScroll>{children}</SmoothScroll>
       </body>
