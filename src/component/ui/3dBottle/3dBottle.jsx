@@ -33,6 +33,19 @@ function Interact() {
 
   return null;
 }
+
+function ApplyEnviromentMap() {
+  useThree(({ scene }) => {
+    scene.traverse((child) => {
+      if (child.isMesh && child.material.isMeshStandardMaterial) {
+        child.material.envMap = scene.environment;
+        child.material.envMapIntensity = 1;
+        child.material.needsUpdate = true;
+      }
+    });
+  });
+  return null;
+}
 export default function Bottle() {
   return (
     <div className={styles.bottle_container}>

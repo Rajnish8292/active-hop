@@ -55,7 +55,7 @@ export default function PixelDistortion() {
     return () => {
       PixelDistortion.dispose();
     };
-  }, [pixelDistortionContainerRef?.current]);
+  }, []);
 
   return (
     <div
