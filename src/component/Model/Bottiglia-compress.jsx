@@ -4,46 +4,51 @@ Command: npx gltfjsx@6.5.3 public/bottiglia-compress.glb --transform
 Files: public/bottiglia-compress.glb [1.75MB] > D:\workspace\1_projects\active-hop\bottiglia-compress-transformed.glb [93.31KB] (95%)
 */
 
-import React, { cache, useEffect, useRef, useState } from "react";
-import {
-  useGLTF,
-  useAnimations,
-  useTexture,
-  shaderMaterial,
-  EnvironmentMap,
-} from "@react-three/drei";
-import { Color, MeshStandardMaterial, Scene, ShaderMaterial } from "three";
-import { useFrame, useLoader } from "@react-three/fiber";
+import React, { useEffect, useRef } from "react";
+import { useGLTF } from "@react-three/drei";
+import { ShaderMaterial } from "three";
+import { useLoader } from "@react-three/fiber";
 import { TextureLoader } from "three";
-
+import gsap from "gsap";
 const VERTEX_SHADER = `
-vUv = uv;
-`;
-const VERTEX_SHADER_VARIABLE = `
+varying vec3 pos;
 varying vec2 vUv;
+void main() {
+    vUv = uv;
+    vec4 modelViewPosition = modelViewMatrix * vec4(position, 1.0);
+    gl_Position = projectionMatrix * modelViewPosition; 
+}
 `;
 
 const FRAGMENT_SHADER = `
+  varying vec2 vUv; 
+  uniform sampler2D uSourceTexture;
+  uniform sampler2D uTargetTexture;
+  uniform float uTextureProgress;
+  uniform float uPixel;
+  uniform bool uIsPixelated;
 
+  void main() {
+    float pixelCount = uPixel;
+    vec2 flippedUV = vec2(vUv.x, 1.0-vUv.y);
+  if(pixelCount == 512.0) {
 
-if(uPixelated) {
-float pixelSize = 32.0;
-vec2 pixelatedUV = floor(vUv * pixelSize) / pixelSize;
-gl_FragColor = texture2D(uTexture, pixelatedUV);
-} else {
-  gl_FragColor = texture2D(uTexture, vUv);
+    vec4 sourceTexture = texture2D(uSourceTexture, flippedUV);
+    vec4 targetTexture = texture2D(uTargetTexture, flippedUV);
+    vec4 color = mix(sourceTexture, targetTexture, uTextureProgress);
+    gl_FragColor = color;
+
+   } else {
+
+    vec2 pixelatedUV = floor( flippedUV * pixelCount) / pixelCount;
+    vec4 sourceTexture = texture2D(uSourceTexture, pixelatedUV);
+    vec4 targetTexture = texture2D(uTargetTexture, pixelatedUV);
+    vec4 color = mix(sourceTexture, targetTexture, uTextureProgress);
+    gl_FragColor = color;
+    }
+
   }
-
-
- 
 `;
-
-const FRAGMENT_SHADER_VARIABLE = `
-  uniform sampler2D uTexture;
-  varying vec2 vUv;
-  uniform bool uPixelated;
-  `;
-
 export function Model(props) {
   const group = React.useRef();
 
@@ -51,106 +56,80 @@ export function Model(props) {
     "/bottiglia-compress-transformed.glb"
   );
 
-  // const currentTexture = useRef("");
-  const [currentTexture, setCurrentTexture] = useState(
+  const initialTexture = useLoader(
+    TextureLoader,
     "texture/ActiveHop_etichetta__01_trail.jpg"
   );
 
-  const [isPixelated, setIsPixelated] = useState(true);
-
   const uniforms = useRef({
-    uPixelated: { value: true },
+    uPixel: { value: 512 },
+    uIsPixelated: { value: true },
+    uSourceTexture: { value: initialTexture },
+    uTargetTexture: { value: initialTexture },
+    uTextureProgress: { value: 1.0 },
   });
 
-  function Pixelation() {
-    useFrame(() => {});
-  }
-
-  // const shaderMaterial = new ShaderMaterial();
-  //   useEffect(() => {
-  //     shaderMaterial.fragmentShader = `
-  //   varying vec2 vUv;
-  //   uniform sampler2D uTexture;
-
-  //   void main() {
-  //     gl_FragColor = texture2D(uTexture, vUv);
-  //   }
-  //   `;
-  //     shaderMaterial.vertexShader = `
-  // varying vec3 pos;
-  // varying vec2 vUv;
-  // void main() {
-  //     vUv = uv;
-  //     vec4 modelViewPosition = modelViewMatrix * vec4(position, 1.0);
-  //     gl_Position = projectionMatrix * modelViewPosition;
-  // }
-  // `;
-  //     shaderMaterial.uniforms = uniforms.current;
-  //   }, []);
+  const shaderMaterial = useRef(null);
+  const material = new ShaderMaterial();
+  material.fragmentShader = FRAGMENT_SHADER;
+  material.vertexShader = VERTEX_SHADER;
+  material.uniforms = uniforms.current;
+  shaderMaterial.current = material;
 
   const changeTextureTo = (url) => {
-    setCurrentTexture(url);
-    console.log("changed texture to ", url);
-  };
-  const beforeCompileHandler = (shader) => {
-    shader.uniforms.uPixelated = { value: isPixelated };
-    shader.uniforms.uTexture = { value: materials.Etichetta.map };
-    shader.vertexShader = shader.vertexShader.replace(
-      "#include <uv_pars_vertex>",
-      `#include <uv_pars_vertex>${VERTEX_SHADER_VARIABLE}`
-    );
-
-    shader.vertexShader = shader.vertexShader.replace(
-      "#include <begin_vertex>",
-      `
-      #include <begin_vertex> 
-      ${VERTEX_SHADER}
-      `
-    );
-
-    shader.fragmentShader = shader.fragmentShader.replace(
-      "#include <dithering_pars_fragment>",
-      `#include <dithering_pars_fragment>${FRAGMENT_SHADER_VARIABLE}`
-    );
-    shader.fragmentShader = shader.fragmentShader.replace(
-      "#include <dithering_fragment>",
-      `#include <dithering_fragment>${FRAGMENT_SHADER}`
-    );
-
-    materials.Etichetta.needsUpdate = true;
-  };
-  const togglePixelation = () => {
-    setIsPixelated((prev) => !prev);
-  };
-
-  useEffect(() => {
-    const textureLoader = new TextureLoader();
-
-    const loadedTexture = textureLoader.load(currentTexture, (texture) => {
-      texture.flipY = true;
-      materials.Etichetta.map = texture;
-      materials.Etichetta.onBeforeCompile = beforeCompileHandler;
-      const cacheKey = `${currentTexture} ${isPixelated ? "1" : "0"}`;
-      materials.Etichetta.customProgramCacheKey = () => cacheKey;
-
-      console.log(cacheKey);
-
-      materials.Etichetta.needsUpdate = true;
+    // const texture = useLoader(TextureLoader, url);
+    uniforms.current.uSourceTexture = { ...uniforms.current.uTargetTexture };
+    uniforms.current.uTargetTexture = { value: new TextureLoader().load(url) };
+    shaderMaterial.current.uniformsNeedUpdate = true;
+    uniforms.current.uTextureProgress.value = 0;
+    const tween = gsap.to(uniforms.current.uTextureProgress, {
+      value: 1,
+      duration: 0.25,
     });
+    console.log("change texture to ", url);
+  };
 
-    materials.Mat.color = new Color(0.94, 0.94, 0.94);
-    materials.Mat.needsUpdate = true;
+  const animateAndChangeTexture = (url) => {
+    const tl = gsap.timeline();
+    let isAnimating = false;
 
-    console.log("re-rendered!");
-
-    return () => loadedTexture.dispose();
-  }, [currentTexture, isPixelated]);
+    tl.to(uniforms.current.uPixel, {
+      value: 32,
+      duration: 0.5,
+      ease: "expo.out",
+      onUpdate: function () {
+        const progress = this.progress() * 100;
+        if (progress >= 50 && !isAnimating) {
+          changeTextureTo(url);
+          isAnimating = true;
+        }
+      },
+    }).to(uniforms.current.uPixel, {
+      value: 512,
+      duration: 0.75,
+      delay: 0.25,
+      ease: "expo.in",
+    });
+  };
 
   useEffect(() => {
-    setInterval(() => {
-      togglePixelation();
-      console.log("toggeled to", isPixelated);
-    }, 4000);
+    const id = setTimeout(() => {
+      animateAndChangeTexture("texture/ActiveHop_etichetta__01_rad.jpg");
+    }, 2000);
+
+    const id2 = setTimeout(() => {
+      animateAndChangeTexture("texture/ActiveHop_etichetta__01_trail.jpg");
+    }, 5000);
+
+    const id3 = setTimeout(() => {
+      animateAndChangeTexture("texture/ActiveHop_etichetta__01_drop.jpg");
+    }, 8000);
+
+    return () => {
+      clearTimeout(id);
+      clearTimeout(id2);
+      clearTimeout(id3);
+    };
   }, []);
   return (
     <group
@@ -159,7 +138,7 @@ export function Model(props) {
       dispose={null}
       scale={[25, 25, 25]}
       position={[0, -2, 0]}
-      rotation={[0, Math.PI / 2, 0]}
+      rotation={[0, 0, 0]}
     >
       <group>
         <group name="Bottiglia">
@@ -172,7 +151,7 @@ export function Model(props) {
         <mesh
           name="Etichetta"
           geometry={nodes.Etichetta.geometry}
-          material={materials.Etichetta}
+          material={shaderMaterial.current}
           position={[0, 0.069, 0]}
           rotation={[Math.PI / 2, 0, -Math.PI]}
         />

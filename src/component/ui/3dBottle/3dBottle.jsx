@@ -11,7 +11,7 @@ import { useRef } from "react";
 function Scene() {
   return (
     <>
-      <axesHelper args={[10]} />
+      {/* <axesHelper args={[10]} /> */}
       <Model />
     </>
   );
@@ -25,7 +25,7 @@ function Interact() {
       modelRef.current = model;
     }
     if (modelRef.current) {
-      modelRef.current.rotation.y = clock.getElapsedTime();
+      // modelRef.current.rotation.y = clock.getElapsedTime();
       // modelRef.current.rotation.x = clock.getElapsedTime();
       // modelRef.current.rotation.z = clock.getElapsedTime();
     }
