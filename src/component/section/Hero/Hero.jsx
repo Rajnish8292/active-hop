@@ -26,7 +26,7 @@ export default function Hero() {
       scrollTrigger: {
         trigger: heroRef.current,
         start: "top top",
-        end: "+=150%",
+        end: "+=100%",
         scrub: true,
         pin: true,
         onEnter: enterHandler,
