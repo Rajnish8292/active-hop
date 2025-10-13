@@ -18,7 +18,7 @@ export default function Navigation() {
             exit={{ opacity: 0 }}
           >
             {" "}
-            &gt; {currentSection}
+            &gt; {currentSection.toUpperCase()}
           </motion.div>
         ) : (
           ""

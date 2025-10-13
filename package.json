@@ -10,19 +10,20 @@
   },
   "dependencies": {
     "@gsap/react": "^2.1.2",
+    "@react-three/drei": "^9.107.0",
+    "@react-three/fiber": "^8.17.0",
+    "@react-three/postprocessing": "^2.16.0",
     "@studio-freight/lenis": "^1.0.42",
     "@studio-freight/react-lenis": "^0.0.47",
+    "@types/three": "^0.160.0",
     "gsap": "^3.13.0",
     "motion": "^12.23.22",
     "next": "14.2.23",
+    "postprocessing": "^6.36.3",
     "react": "^18",
     "react-dom": "^18",
     "recoil": "^0.7.7",
-     "@react-three/fiber": "^8.17.0",
-    "@react-three/drei": "^9.107.0",
-    "@react-three/postprocessing": "^2.16.0",
-    "three": "^0.160.0",
-    "@types/three": "^0.160.0"
+    "three": "^0.160.0"
   },
   "devDependencies": {
     "eslint": "^8",

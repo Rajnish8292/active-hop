@@ -3,11 +3,11 @@ import { useCallback, useRef } from "react";
 import styles from "./Flavors.module.css";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
-import ScrollTrigger from "gsap/ScrollTrigger";
 import Marquee from "@/component/ui/Marquee/Marquee";
 import { DURATION, EASE } from "@/app/utils/ease";
 import { useRecoilState } from "recoil";
 import { navigation_atom } from "@/store/navigation_atom";
+import { flavor_atom } from "@/store/flavors_atom";
 
 export default function Flavors() {
   const sectionRef = useRef();
@@ -17,6 +17,9 @@ export default function Flavors() {
   const hasTriggered = useRef(false);
 
   const [currentSection, setCurrentSection] = useRecoilState(navigation_atom);
+  const [currentFlavor, setCurrentFlavor] = useRecoilState(flavor_atom);
+
+  const flavorRef = useRef(null);
   const enterHandler = useCallback(() => {
     if (!hasTriggered.current) {
       setCurrentSection("Flavors");
@@ -44,9 +47,15 @@ export default function Flavors() {
 
         onUpdate: (self) => {
           const progress = self.progress;
-          console.log(progress);
-
           if (progress <= 0.232) {
+            if (flavorRef.current != "drop") {
+              setCurrentFlavor({
+                name: "drop",
+                url: "texture/ActiveHop_etichetta__01_drop.jpg",
+              });
+              flavorRef.current = "drop";
+            }
+
             gsap.set(marquee1.current, {
               color: "var(--color-drop)",
               ease: EASE,
@@ -79,6 +88,13 @@ export default function Flavors() {
 
           if (progress > 0.232 && progress <= 0.487) {
             // Second section
+            if (flavorRef.current != "trail") {
+              setCurrentFlavor({
+                name: "trail",
+                url: "texture/ActiveHop_etichetta__01_trail.jpg",
+              });
+              flavorRef.current = "trail";
+            }
 
             gsap.set(marquee1.current, {
               color: "rgba(0, 0, 0, 0.1)",
@@ -111,7 +127,13 @@ export default function Flavors() {
 
           if (progress >= 0.487) {
             // Third section
-
+            if (flavorRef.current != "rad") {
+              setCurrentFlavor({
+                name: "rad",
+                url: "texture/ActiveHop_etichetta__01_rad.jpg",
+              });
+              flavorRef.current = "rad";
+            }
             gsap.set(marquee1.current, {
               color: "rgba(0, 0, 0, 0.1)",
               ease: EASE,

@@ -11,7 +11,6 @@ import { useRef } from "react";
 function Scene() {
   return (
     <>
-      {/* <axesHelper args={[10]} /> */}
       <Model />
     </>
   );
@@ -25,33 +24,19 @@ function Interact() {
       modelRef.current = model;
     }
     if (modelRef.current) {
-      // modelRef.current.rotation.y = clock.getElapsedTime();
-      // modelRef.current.rotation.x = clock.getElapsedTime();
-      // modelRef.current.rotation.z = clock.getElapsedTime();
+      modelRef.current.rotation.y = clock.getElapsedTime();
     }
   });
 
   return null;
 }
 
-function ApplyEnviromentMap() {
-  useThree(({ scene }) => {
-    scene.traverse((child) => {
-      if (child.isMesh && child.material.isMeshStandardMaterial) {
-        child.material.envMap = scene.environment;
-        child.material.envMapIntensity = 1;
-        child.material.needsUpdate = true;
-      }
-    });
-  });
-  return null;
-}
 export default function Bottle() {
   return (
     <div className={styles.bottle_container}>
       <Canvas
         style={{ height: "100vh", width: "100vw" }}
-        camera={{ position: [-10, 0, -10], fov: 30 }}
+        camera={{ position: [0, 0, 10], fov: 30 }}
       >
         <Environment preset="sunset" />
         <Scene />
