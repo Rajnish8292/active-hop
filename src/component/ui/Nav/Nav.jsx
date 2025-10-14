@@ -1,8 +1,8 @@
 import styles from "./Nav.module.css";
 import Logo from "../Logo/Logo";
 import { motion } from "motion/react";
-import { delay } from "motion";
-export default function Nav({
+
+function Nav({
   productClickHandler,
   subscribeClickHandler,
   aboutClickHandler,
@@ -121,3 +121,5 @@ export default function Nav({
     </header>
   );
 }
+
+export default Nav;

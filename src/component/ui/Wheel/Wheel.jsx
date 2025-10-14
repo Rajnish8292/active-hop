@@ -45,7 +45,7 @@ export default function Wheel() {
     return () => {
       window.removeEventListener("scroll", scrollHandler);
     };
-  }, []);
+  }, [scrollHandler]);
 
   return (
     <>
