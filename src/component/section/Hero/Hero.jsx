@@ -15,12 +15,15 @@ export default function Hero() {
   const heroRef = useRef(null);
   const textRef = useRef(null);
   const [currentSection, setCurrentSection] = useRecoilState(navigation_atom);
+
   const enterHandler = useCallback(() => {
     setCurrentSection("Outdoor Inside");
-  });
+  }, [setCurrentSection]);
+
   const leaveHandler = useCallback(() => {
     setCurrentSection("");
-  });
+  }, [setCurrentSection]);
+
   useGSAP(() => {
     const tl = gsap.timeline({
       scrollTrigger: {
@@ -44,8 +47,8 @@ export default function Hero() {
     });
 
     tl.to(heroRef.current.children[0], {
-      height: "500px",
-      width: "500px",
+      height: "60vh",
+      width: "60vh",
       ease: EASE,
       duration: DURATION,
     }).to(

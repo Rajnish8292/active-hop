@@ -4,7 +4,7 @@ Command: npx gltfjsx@6.5.3 public/bottiglia-compress.glb --transform
 Files: public/bottiglia-compress.glb [1.75MB] > D:\workspace\1_projects\active-hop\bottiglia-compress-transformed.glb [93.31KB] (95%)
 */
 "use client";
-import React, { useEffect, useRef } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 import { useGLTF } from "@react-three/drei";
 import { ShaderMaterial } from "three";
 import { useLoader } from "@react-three/fiber";
@@ -57,7 +57,6 @@ export function Model(props) {
   const group = React.useRef();
   const isAnimatingRef = useRef(false);
   const currentTweenRef = useRef(null);
-
   const animationQueueRef = useRef([]);
 
   const { nodes, materials, animations } = useGLTF(
@@ -66,7 +65,7 @@ export function Model(props) {
 
   const initialTexture = useLoader(
     TextureLoader,
-    "texture/ActiveHop_etichetta__01_trail.jpg"
+    "texture/ActiveHop_etichetta__01_trail.webp"
   );
   const uniforms = useRef({
     uPixel: { value: 512 },
@@ -82,7 +81,6 @@ export function Model(props) {
   const currentRotation = useRef(new THREE.Euler(0, Math.PI / 2, 0));
   const scale = useRef(1); // current scale
   const targetScale = useRef(1); // desired scale based on mouse
-
   const shaderMaterial = useRef(null);
   const material = new ShaderMaterial();
   material.fragmentShader = FRAGMENT_SHADER;
@@ -90,7 +88,7 @@ export function Model(props) {
   material.uniforms = uniforms.current;
   shaderMaterial.current = material;
 
-  const changeTextureTo = (url) => {
+  const changeTextureTo = useCallback((url) => {
     uniforms.current.uSourceTexture = { ...uniforms.current.uTargetTexture };
     uniforms.current.uTargetTexture = { value: new TextureLoader().load(url) };
     shaderMaterial.current.uniformsNeedUpdate = true;
@@ -99,67 +97,68 @@ export function Model(props) {
       value: 1,
       duration: 0.25,
     });
-  };
+  }, []);
 
-  const animateAndChangeTexture = (url) => {
-    const createTimeline = (url) => {
-      const tl = gsap.timeline({ paused: true });
-      let isAnimated = false;
+  const animateAndChangeTexture = useCallback(
+    (url) => {
+      const createTimeline = (url) => {
+        const tl = gsap.timeline({ paused: true });
+        let isAnimated = false;
 
-      tl.to(uniforms.current.uPixel, {
-        value: 32,
-        duration: 0.25,
-        ease: "expo.out",
-        onUpdate: function () {
-          const progress = this.progress() * 100;
-          if (progress >= 50 && !isAnimated) {
-            changeTextureTo(url);
-            isAnimated = true;
-          }
-        },
-      }).to(uniforms.current.uPixel, {
-        value: 512,
-        duration: 0.75,
-        delay: 0.25,
-        ease: "expo.in",
-      });
+        tl.to(uniforms.current.uPixel, {
+          value: 32,
+          duration: 0.25,
+          ease: "expo.out",
+          onUpdate: function () {
+            const progress = this.progress() * 100;
+            if (progress >= 50 && !isAnimated) {
+              changeTextureTo(url);
+              isAnimated = true;
+            }
+          },
+        }).to(uniforms.current.uPixel, {
+          value: 512,
+          duration: 0.75,
+          delay: 0.25,
+          ease: "expo.in",
+        });
 
-      // When done, trigger next animation
-      tl.eventCallback("onComplete", () => {
-        isAnimatingRef.current = false;
-        currentTweenRef.current = null;
-        playNextAnimation();
-      });
+        // When done, trigger next animation
+        tl.eventCallback("onComplete", () => {
+          isAnimatingRef.current = false;
+          currentTweenRef.current = null;
+          playNextAnimation();
+        });
 
-      return tl;
-    };
+        return tl;
+      };
 
-    const playNextAnimation = () => {
-      if (animationQueueRef.current.length === 0 || isAnimatingRef.current)
-        return;
-      const next = animationQueueRef.current.shift();
-      isAnimatingRef.current = true;
-      currentTweenRef.current = next;
-      next.play();
-    };
+      const playNextAnimation = () => {
+        if (animationQueueRef.current.length === 0 || isAnimatingRef.current)
+          return;
+        const next = animationQueueRef.current.shift();
+        isAnimatingRef.current = true;
+        currentTweenRef.current = next;
+        next.play();
+      };
 
-    // --- main logic ---
-    const timelineInstance = createTimeline(url);
+      // --- main logic ---
+      const timelineInstance = createTimeline(url);
 
-    if (isAnimatingRef.current) {
-      animationQueueRef.current.push(timelineInstance);
-    } else {
-      isAnimatingRef.current = true;
-      currentTweenRef.current = timelineInstance;
-      timelineInstance.play();
-    }
-  };
-
-  const mouseMoveHandler = (e) => {
+      if (isAnimatingRef.current) {
+        animationQueueRef.current.push(timelineInstance);
+      } else {
+        isAnimatingRef.current = true;
+        currentTweenRef.current = timelineInstance;
+        timelineInstance.play();
+      }
+    },
+    [changeTextureTo]
+  );
+  const mouseMoveHandler = useCallback((e) => {
     const { clientX: x, clientY: y } = e;
     const { innerWidth: width, innerHeight: height } = window;
 
-    // normalize mouse: -1 -> 1
     const normalizedX = (x - width / 2) / (width / 2);
     const normalizedY = (y - height / 2) / (height / 2);
 
@@ -177,18 +176,16 @@ export function Model(props) {
     const exponent = 2;
     targetScale.current =
       minScale + Math.pow(distanceFromCenter, exponent) * (maxScale - minScale);
-  };
+  }, []);
 
   useEffect(() => {
     animateAndChangeTexture(currentFlavor.url);
-    console.log("changed flavor to", currentFlavor);
-  }, [currentFlavor]);
+  }, [currentFlavor, animateAndChangeTexture]);
 
   useEffect(() => {
     window.addEventListener("mousemove", mouseMoveHandler);
-
     return () => window.removeEventListener("mousemove", mouseMoveHandler);
-  });
+  }, [mouseMoveHandler]);
 
   useFrame(() => {
     if (!group.current) return;

@@ -10,17 +10,19 @@ export default function Feature() {
   const sectionRef = useRef(null);
   const [currentSection, setCurrentSection] = useRecoilState(navigation_atom);
   const hasTriggered = useRef(false);
+
   const enterHandler = useCallback(() => {
     if (!hasTriggered.current) {
       setCurrentSection("Target zero");
       hasTriggered.current = true;
     }
-  }, []);
+  }, [setCurrentSection]);
 
   const leaveHandler = useCallback(() => {
     setCurrentSection("");
     hasTriggered.current = false;
-  }, []);
+  }, [setCurrentSection]);
+
   useGSAP(() => {
     ScrollTrigger.create({
       trigger: sectionRef.current,

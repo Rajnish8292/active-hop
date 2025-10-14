@@ -80,7 +80,7 @@ const state = {
     isAboutRendered: true,
     isCartRendered: false,
     headerStyle: {
-      height: "400px",
+      height: "220px",
       width: "700px",
       borderRadius: "var(--radius-lg)",
     },
@@ -96,7 +96,7 @@ const state = {
     isAboutRendered: false,
     isCartRendered: true,
     headerStyle: {
-      height: "300px",
+      height: "250px",
       width: "600px",
       borderRadius: "var(--radius-lg)",
     },
@@ -130,155 +130,165 @@ export default function Header() {
   const isAnimatingRef = useRef(false);
   const currentTweenRef = useRef(null);
 
-  const toState = (state) => {
-    if (isAnimatingRef.current) return; // Prevent state changes while animating
-    isAnimatingRef.current = true;
+  const toState = useCallback(
+    (state) => {
+      if (isAnimatingRef.current) return; // Prevent state changes while animating
+      isAnimatingRef.current = true;
 
-    if (currentTweenRef.current) {
-      currentTweenRef.current.kill(); // Kill any running animation before starting new
-    }
+      if (currentTweenRef.current) {
+        currentTweenRef.current.kill(); // Kill any running animation before starting new
+      }
 
-    if (state.name === "normal") {
-      if (isLoaderRendered !== state.isLoaderRendered)
-        setIsLoaderRendered(state.isLoaderRendered);
-      if (isNavRendered !== state.isNavRendered)
-        setIsNavRendered(state.isNavRendered);
-      setTimeout(() => {
+      if (state.name === "normal") {
+        if (isLoaderRendered !== state.isLoaderRendered)
+          setIsLoaderRendered(state.isLoaderRendered);
+        if (isNavRendered !== state.isNavRendered)
+          setIsNavRendered(state.isNavRendered);
+        setTimeout(() => {
+          currentTweenRef.current = gsap.to(headerRef.current, {
+            ...state.headerStyle,
+            ease: EASE,
+            duration: DURATION,
+            onComplete: () => {
+              isAnimatingRef.current = false;
+            },
+          });
+        }, 1000);
+      }
+
+      if (state.name === "product") {
+        setIsBgRendered(state.isBgRendered);
+        setIsSuscribeRendered(state.isSubscribeRendered);
+        setIsAboutRendered(state.isAboutRendered);
+        setIsCartRendered(state.isCartRendered);
         currentTweenRef.current = gsap.to(headerRef.current, {
           ...state.headerStyle,
           ease: EASE,
-          duration: DURATION,
+          duration: 1.5,
+          onUpdate: function () {
+            if (this.progress() >= 0.3) {
+              if (isProductRendered !== state.isProductRendered)
+                setIsProductRendered(state.isProductRendered);
+            }
+          },
           onComplete: () => {
             isAnimatingRef.current = false;
           },
+          onInterrupt: () => {
+            isAnimatingRef.current = false;
+          },
         });
-      }, 1000);
-    }
+      }
 
-    if (state.name === "product") {
-      setIsBgRendered(state.isBgRendered);
-      setIsSuscribeRendered(state.isSubscribeRendered);
-      setIsAboutRendered(state.isAboutRendered);
-      setIsCartRendered(state.isCartRendered);
-      currentTweenRef.current = gsap.to(headerRef.current, {
-        ...state.headerStyle,
-        ease: EASE,
-        duration: 1.5,
-        onUpdate: function () {
-          if (this.progress() >= 0.3) {
-            if (isProductRendered !== state.isProductRendered)
-              setIsProductRendered(state.isProductRendered);
-          }
-        },
-        onComplete: () => {
-          isAnimatingRef.current = false;
-        },
-        onInterrupt: () => {
-          isAnimatingRef.current = false;
-        },
-      });
-    }
-
-    if (state.name === "subscribe") {
-      setIsProductRendered(state.isProductRendered);
-      setIsAboutRendered(state.isAboutRendered);
-      setIsCartRendered(state.isCartRendered);
-      setIsBgRendered(state.isBgRendered);
-      currentTweenRef.current = gsap.to(headerRef.current, {
-        ...state.headerStyle,
-        ease: EASE,
-        duration: 1.5,
-        onUpdate: function () {
-          if (this.progress() >= 0.3) {
-            if (isSubscribeRendered !== state.isSubscribeRendered)
-              setIsSuscribeRendered(state.isSubscribeRendered);
-          }
-        },
-        onComplete: () => {
-          isAnimatingRef.current = false;
-        },
-        onInterrupt: () => {
-          isAnimatingRef.current = false;
-        },
-      });
-    }
-
-    if (state.name === "about") {
-      setIsProductRendered(state.isProductRendered);
-      setIsSuscribeRendered(state.isSubscribeRendered);
-      setIsCartRendered(state.isCartRendered);
-      setIsBgRendered(state.isBgRendered);
-      currentTweenRef.current = gsap.to(headerRef.current, {
-        ...state.headerStyle,
-        ease: EASE,
-        duration: 1.5,
-        onUpdate: function () {
-          if (this.progress() >= 0.3) {
-            if (isAboutRendered !== state.isAboutRendered)
-              setIsAboutRendered(state.isAboutRendered);
-          }
-        },
-        onComplete: () => {
-          isAnimatingRef.current = false;
-        },
-        onInterrupt: () => {
-          isAnimatingRef.current = false;
-        },
-      });
-    }
-
-    if (state.name === "cart") {
-      setIsProductRendered(state.isProductRendered);
-      setIsSuscribeRendered(state.isSubscribeRendered);
-      setIsAboutRendered(state.isAboutRendered);
-      setIsBgRendered(state.isBgRendered);
-      currentTweenRef.current = gsap.to(headerRef.current, {
-        ...state.headerStyle,
-        ease: EASE,
-        duration: 1.5,
-        onUpdate: function () {
-          if (this.progress() >= 0.3) {
-            if (isCartRendered !== state.isCartRendered)
-              setIsCartRendered(state.isCartRendered);
-          }
-        },
-        onComplete: () => {
-          isAnimatingRef.current = false;
-        },
-        onInterrupt: () => {
-          isAnimatingRef.current = false;
-        },
-      });
-    }
-
-    if (state.name === "backToNormal") {
-      setIsProductRendered(state.isProductRendered);
-      setIsSuscribeRendered(state.isSubscribeRendered);
-      setIsAboutRendered(state.isAboutRendered);
-      setIsCartRendered(state.isCartRendered);
-      setTimeout(() => {
+      if (state.name === "subscribe") {
+        setIsProductRendered(state.isProductRendered);
+        setIsAboutRendered(state.isAboutRendered);
+        setIsCartRendered(state.isCartRendered);
         setIsBgRendered(state.isBgRendered);
         currentTweenRef.current = gsap.to(headerRef.current, {
           ...state.headerStyle,
           ease: EASE,
-          duration: DURATION,
+          duration: 1.5,
+          onUpdate: function () {
+            if (this.progress() >= 0.3) {
+              if (isSubscribeRendered !== state.isSubscribeRendered)
+                setIsSuscribeRendered(state.isSubscribeRendered);
+            }
+          },
           onComplete: () => {
             isAnimatingRef.current = false;
           },
+          onInterrupt: () => {
+            isAnimatingRef.current = false;
+          },
         });
-      }, EXIT_DURATION * 1000 + 200);
-    }
-  };
+      }
 
-  const bgClickHandler = () => {
+      if (state.name === "about") {
+        setIsProductRendered(state.isProductRendered);
+        setIsSuscribeRendered(state.isSubscribeRendered);
+        setIsCartRendered(state.isCartRendered);
+        setIsBgRendered(state.isBgRendered);
+        currentTweenRef.current = gsap.to(headerRef.current, {
+          ...state.headerStyle,
+          ease: EASE,
+          duration: 1.5,
+          onUpdate: function () {
+            if (this.progress() >= 0.3) {
+              if (isAboutRendered !== state.isAboutRendered)
+                setIsAboutRendered(state.isAboutRendered);
+            }
+          },
+          onComplete: () => {
+            isAnimatingRef.current = false;
+          },
+          onInterrupt: () => {
+            isAnimatingRef.current = false;
+          },
+        });
+      }
+
+      if (state.name === "cart") {
+        setIsProductRendered(state.isProductRendered);
+        setIsSuscribeRendered(state.isSubscribeRendered);
+        setIsAboutRendered(state.isAboutRendered);
+        setIsBgRendered(state.isBgRendered);
+        currentTweenRef.current = gsap.to(headerRef.current, {
+          ...state.headerStyle,
+          ease: EASE,
+          duration: 1.5,
+          onUpdate: function () {
+            if (this.progress() >= 0.3) {
+              if (isCartRendered !== state.isCartRendered)
+                setIsCartRendered(state.isCartRendered);
+            }
+          },
+          onComplete: () => {
+            isAnimatingRef.current = false;
+          },
+          onInterrupt: () => {
+            isAnimatingRef.current = false;
+          },
+        });
+      }
+
+      if (state.name === "backToNormal") {
+        setIsProductRendered(state.isProductRendered);
+        setIsSuscribeRendered(state.isSubscribeRendered);
+        setIsAboutRendered(state.isAboutRendered);
+        setIsCartRendered(state.isCartRendered);
+        setTimeout(() => {
+          setIsBgRendered(state.isBgRendered);
+          currentTweenRef.current = gsap.to(headerRef.current, {
+            ...state.headerStyle,
+            ease: EASE,
+            duration: DURATION,
+            onComplete: () => {
+              isAnimatingRef.current = false;
+            },
+          });
+        }, EXIT_DURATION * 1000 + 200);
+      }
+    },
+    [
+      isAboutRendered,
+      isCartRendered,
+      isLoaderRendered,
+      isNavRendered,
+      isProductRendered,
+      isSubscribeRendered,
+    ]
+  );
+
+  const bgClickHandler = useCallback(() => {
     toState(state.backToNormal);
-  };
+  }, [toState]);
 
   useEffect(() => {
     setTimeout(() => {
       toState(state.normal);
-    }, 2000);
-  }, []);
+    }, 1000);
+  }, [toState]);
 
   return (
     <>
@@ -289,7 +299,7 @@ export default function Header() {
           width: "100vw",
           pointerEvents: "none",
           position: "fixed",
-          top: 0,
+          bottom: 0,
           left: 0,
           zIndex: 1000,
           display: "flex",

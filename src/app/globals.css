@@ -5,12 +5,14 @@
 }
 
 @font-face {
-  font-family: "sora";;
+  font-family: "sora";
+  font-display: swap;
   src: url('../app/fonts/sora.woff2') format('woff2');
 }
 
 @font-face {
-  font-family: "lekton";;
+  font-family: "lekton";
+  font-display: swap;
   src: url('../app/fonts/lekton.woff2') format('woff2');
 }
 
@@ -82,6 +84,12 @@ body::-webkit-scrollbar {
 
 
 
+@media screen and (max-width: 800px) {
+  html {
+    font-size: 12px;
+  }
+}
+  
 
 
 
@@ -92,59 +100,3 @@ body::-webkit-scrollbar {
 
 
 
-
-
-   
-    /* --font-sans: "Sora";
-    --font-mono: "Lekton";
-    --color-red-50: oklch(.971 .013 17.38);
-    --color-red-200: oklch(.885 .062 18.334);
-    --color-red-500: oklch(.637 .237 25.331);
-    --color-red-600: oklch(.577 .245 27.325);
-    --color-red-700: oklch(.505 .213 27.518);
-    --color-green-200: oklch(.925 .084 155.995);
-    --color-green-700: oklch(.527 .154 150.069);
-    --color-green-800: oklch(.448 .119 151.328);
-    --color-gray-200: oklch(.928 .006 264.531);
-    --color-gray-300: oklch(.872 .01 258.338);
-    --color-gray-400: oklch(.707 .022 261.325);
-    --color-gray-600: oklch(.446 .03 256.802);
-    --color-gray-800: oklch(.278 .033 256.848);
-    --color-black: #000;
-    --color-white: #fff;
-    --spacing: .25rem;
-    --container-xs: 20rem;
-    --container-sm: 24rem;
-    --container-xl: 36rem;
-    --container-2xl: 42rem;
-    --container-6xl: 72rem;
-    --text-xs: .85rem;
-    --text-xs--line-height: 1.1;
-    --text-sm: .875rem;
-    --text-sm--line-height: calc(1.25/.875);
-    --text-2xl: 1.5rem;
-    --text-2xl--line-height: calc(2/1.5);
-    --text-9xl: 8rem;
-    --text-9xl--line-height: 1;
-    --font-weight-bold: 700;
-    --font-weight-extrabold: 800;
-    --radius-lg: .5rem;
-    --radius-xl: .75rem;
-    --animate-spin: spin 1s linear infinite;
-    --blur-sm: 8px;
-    --blur-2xl: 40px;
-    --default-transition-duration: .15s;
-    --default-transition-timing-function: cubic-bezier(.4,0,.2,1);
-    --default-font-family: var(--font-sans);
-    --default-font-feature-settings: var(--font-sans--font-feature-settings);
-    --default-font-variation-settings: var(--font-sans--font-variation-settings);
-    --default-mono-font-family: var(--font-mono);
-    --default-mono-font-feature-settings: var(--font-mono--font-feature-settings);
-    --default-mono-font-variation-settings: var(--font-mono--font-variation-settings);
-    --color-rad: #bccc32;
-    --color-drop: #e5e8d0;
-    --color-trail: #7b628f;
-    --color-gray: color-mix(in oklab,var(--color-gray-200)50%,transparent);
-    --text-huge: 15rem;
-    --text-huge--line-height: .8;
-    --text-huge--font-weight: 800; */

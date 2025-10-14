@@ -20,16 +20,19 @@ export default function Flavors() {
   const [currentFlavor, setCurrentFlavor] = useRecoilState(flavor_atom);
 
   const flavorRef = useRef(null);
+
   const enterHandler = useCallback(() => {
     if (!hasTriggered.current) {
       setCurrentSection("Flavors");
       hasTriggered.current = true;
     }
-  }, []);
+  }, [setCurrentSection]);
+
   const leaveHandler = useCallback(() => {
     setCurrentSection("");
     hasTriggered.current = false;
-  }, []);
+  }, [setCurrentSection]);
+
   useGSAP(() => {
     if (!sectionRef?.current) return;
 
@@ -51,7 +54,7 @@ export default function Flavors() {
             if (flavorRef.current != "drop") {
               setCurrentFlavor({
                 name: "drop",
-                url: "texture/ActiveHop_etichetta__01_drop.jpg",
+                url: "texture/ActiveHop_etichetta__01_drop.webp",
               });
               flavorRef.current = "drop";
             }
@@ -87,11 +90,10 @@ export default function Flavors() {
           }
 
           if (progress > 0.232 && progress <= 0.487) {
-            // Second section
             if (flavorRef.current != "trail") {
               setCurrentFlavor({
                 name: "trail",
-                url: "texture/ActiveHop_etichetta__01_trail.jpg",
+                url: "texture/ActiveHop_etichetta__01_trail.webp",
               });
               flavorRef.current = "trail";
             }
@@ -130,7 +132,7 @@ export default function Flavors() {
             if (flavorRef.current != "rad") {
               setCurrentFlavor({
                 name: "rad",
-                url: "texture/ActiveHop_etichetta__01_rad.jpg",
+                url: "texture/ActiveHop_etichetta__01_rad.webp",
               });
               flavorRef.current = "rad";
             }

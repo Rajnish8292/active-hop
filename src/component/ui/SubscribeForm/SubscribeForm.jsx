@@ -28,7 +28,7 @@ export default function SubscribeForm() {
     if (!isError) {
       alert("you are subscribed to our newsletter.");
     }
-  });
+  }, [email, name, setIsEmailError, setIsNameError]);
   return (
     <motion.div
       initial={{ y: 50, opacity: 0 }}
