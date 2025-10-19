@@ -1,19 +1,16 @@
 .marquee {
-    height: 33.3vh;
+    height: auto;
     width: 100vw;
     overflow: hidden;
     white-space: nowrap;
     font-family: var(--font-sans);
-    font-size: 15rem;
-    line-height: 1.2;
+    font-size:  var(--text-9xl);
+    line-height: var(--text-9xl--line-height);
     font-weight: var(--font-weight-bold);
     color: var(--color-gray);
     transition: 0.5s;
+}
 
-}
-.marquee_container {
-    transform: translate(0, 30%);
-}
 .marquee_left {
     display: flex;
     gap: var(--spacing-md);

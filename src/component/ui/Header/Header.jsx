@@ -17,7 +17,6 @@ import { AnimatePresence } from "motion/react";
 import gsap from "gsap";
 import { DURATION, EASE, EXIT_DURATION } from "@/app/utils/ease";
 import Product from "../Product/Product";
-import { redirect } from "next/dist/server/api-utils";
 import BlurredBg from "../BlurredBg/BlurredBg";
 import SubscribeForm from "../SubscribeForm/SubscribeForm";
 import AboutUs from "../AboutUs/AboutUs";
@@ -283,12 +282,19 @@ export default function Header() {
   const bgClickHandler = useCallback(() => {
     toState(state.backToNormal);
   }, [toState]);
+  const pageLoadHandler = useCallback(() => {
+    console.log("loaded");
+    toState(state.normal);
+  }, [toState, state.normal]);
 
   useEffect(() => {
-    setTimeout(() => {
-      toState(state.normal);
-    }, 1000);
-  }, [toState]);
+    if (document.readyState === "complete") {
+      pageLoadHandler();
+    } else {
+      window.addEventListener("load", pageLoadHandler);
+      return () => window.removeEventListener("load", pageLoadHandler);
+    }
+  }, [pageLoadHandler]);
 
   return (
     <>

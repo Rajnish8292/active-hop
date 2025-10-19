@@ -8,45 +8,56 @@ import { useRecoilState } from "recoil";
 import { navigation_atom } from "@/store/navigation_atom";
 export default function Feature() {
   const sectionRef = useRef(null);
-  const [currentSection, setCurrentSection] = useRecoilState(navigation_atom);
-  const hasTriggered = useRef(false);
+  // const [currentSection, setCurrentSection] = useRecoilState(navigation_atom);
+  // const hasTriggered = useRef(false);
 
-  const enterHandler = useCallback(() => {
-    if (!hasTriggered.current) {
-      setCurrentSection("Target zero");
-      hasTriggered.current = true;
-    }
-  }, [setCurrentSection]);
+  // const enterHandler = useCallback(() => {
+  //   if (!hasTriggered.current) {
+  //     setCurrentSection("Target zero");
+  //     hasTriggered.current = true;
+  //   }
+  // }, [setCurrentSection]);
 
-  const leaveHandler = useCallback(() => {
-    setCurrentSection("");
-    hasTriggered.current = false;
-  }, [setCurrentSection]);
+  // const leaveHandler = useCallback(() => {
+  //   setCurrentSection("");
+  //   hasTriggered.current = false;
+  // }, [setCurrentSection]);
 
-  useGSAP(() => {
-    ScrollTrigger.create({
-      trigger: sectionRef.current,
-      start: "top top",
-      end: "+=400%",
-      pin: true,
-      onEnter: enterHandler,
-      onLeave: leaveHandler,
-      onEnterBack: enterHandler,
-      onLeaveBack: leaveHandler,
-    });
-  }, []);
+  // useGSAP(() => {
+  //   ScrollTrigger.create({
+  //     trigger: sectionRef.current,
+  //     start: "top top",
+  //     end: "+=400%",
+  //     pin: true,
+  //     onEnter: enterHandler,
+  //     onLeave: leaveHandler,
+  //     onEnterBack: enterHandler,
+  //     onLeaveBack: leaveHandler,
+  //   });
+  // }, []);
 
   return (
     <section className={styles.feature} ref={sectionRef}>
-      <Wheel />
-      <div className={styles.detail}>
-        <p>
-          Activehop has been crafted with the goal of &quot;the rest is
-          zero&quot;. 0 sugars, carbohydrates, fats and alcohol. The ingredients
-          chosen are all of natural origin, without colorants to make the
-          experience even purer and more genuine. All elements are naturally
-          lactose-free and vegan friendly.
-        </p>
+      <div style={{ height: "500vh", width: "100vw" }}>
+        <div
+          style={{
+            height: "100vh",
+            width: "100vw",
+            position: "sticky",
+            top: 0,
+          }}
+        >
+          <Wheel />
+          <div className={styles.detail}>
+            <p>
+              Activehop has been crafted with the goal of &quot;the rest is
+              zero&quot;. 0 sugars, carbohydrates, fats and alcohol. The
+              ingredients chosen are all of natural origin, without colorants to
+              make the experience even purer and more genuine. All elements are
+              naturally lactose-free and vegan friendly.
+            </p>
+          </div>
+        </div>
       </div>
     </section>
   );

@@ -1,69 +1,88 @@
 "use client";
 import PixelDistortion from "@/component/ui/PixelDistortion/PixelDistortion";
 import styles from "./Hero.module.css";
-import { useGSAP } from "@gsap/react";
-import { useCallback, useRef } from "react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { DURATION, EASE } from "@/app/utils/ease";
+import { useCallback, useEffect, useRef } from "react";
 import { useRecoilState } from "recoil";
 import { navigation_atom } from "@/store/navigation_atom";
-
-gsap.registerPlugin(ScrollTrigger);
-
+import gsap from "gsap";
 export default function Hero() {
   const heroRef = useRef(null);
   const textRef = useRef(null);
+  const initialDimension = useRef(null);
+
   const [currentSection, setCurrentSection] = useRecoilState(navigation_atom);
 
-  const enterHandler = useCallback(() => {
-    setCurrentSection("Outdoor Inside");
-  }, [setCurrentSection]);
+  const scrollHandler = useCallback((e) => {
+    const heroElement = heroRef?.current;
+    if (!heroElement) return;
 
-  const leaveHandler = useCallback(() => {
-    setCurrentSection("");
-  }, [setCurrentSection]);
+    const pixelDistortionElement =
+      heroElement?.children[0]?.children[0]?.children[0];
+    if (!pixelDistortionElement) return;
 
-  useGSAP(() => {
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: heroRef.current,
-        start: "top top",
-        end: "+=100%",
-        scrub: true,
-        pin: true,
-        onEnter: enterHandler,
-        onEnterBack: enterHandler,
-        onLeave: leaveHandler,
-        onLeaveBack: leaveHandler,
-        onUpdate: (self) => {
-          gsap.set(heroRef.current.children[0], {
-            borderRadius: `${20 + 980 * self.progress}px`,
-            ease: EASE,
-            duration: DURATION * 2,
-          });
-        },
-      },
-    });
+    if (!initialDimension.current) {
+      initialDimension.current = {
+        height: pixelDistortionElement.offsetHeight,
+        width: pixelDistortionElement.offsetWidth,
+      };
+    }
 
-    tl.to(heroRef.current.children[0], {
-      height: "60vh",
-      width: "60vh",
-      ease: EASE,
-      duration: DURATION,
-    }).to(
-      textRef.current,
-      {
-        yPercent: -200,
-        ease: EASE,
-        duration: DURATION,
-      },
-      0.5
+    const { scrollY } = window;
+    const { innerHeight: windowHeight, innerWidth: windowWidth } = window;
+    const { width, height } = initialDimension.current;
+    const widthScrollFactor = 1; // width changes faster
+    const heightScrollFactor = 1; // height changes slower
+
+    // it calcuate percenatge scrolled in hero section
+    // formula = (scrolled / (total height of hero section)) * 100
+    const percentageScrolled = (scrollY / (windowHeight * 1)) * 100;
+
+    // minimum dimension to which pixel distortion element can animate
+    let minDimension = Math.min(windowHeight, windowWidth) * 0.7;
+
+    // calcuate new height, width and border radius based on percentage scrolled
+    const calcuatedHeight = Math.max(
+      height * (1 - percentageScrolled / 100) * heightScrollFactor,
+      minDimension
     );
+    const calcuatedWidth = Math.max(
+      width * (1 - percentageScrolled / 100) * widthScrollFactor,
+      minDimension
+    );
+    const calcuatedRadius = 20 + scrollY;
+
+    gsap.to(pixelDistortionElement, {
+      height: calcuatedHeight,
+      width: calcuatedWidth,
+      borderRadius: calcuatedRadius,
+      duration: 0.3,
+      ease: "power3.out",
+      overwrite: "auto",
+    });
   }, []);
+
+  useEffect(() => {
+    window.addEventListener("scroll", scrollHandler);
+    return () => {
+      window.removeEventListener("scroll", scrollHandler);
+    };
+  }, []);
+
   return (
     <section ref={heroRef} className={styles.hero_section}>
-      <PixelDistortion />
+      <div
+        style={{
+          height: "170vh",
+          width: "100vw",
+          display: "flex",
+          justifyContent: "center",
+          padding: "0 var(--spacing-md)",
+        }}
+      >
+        {" "}
+        <PixelDistortion />
+      </div>
+
       <div className={styles.hero_description}>
         <div ref={textRef} className={styles.hero_description_text}>
           Composed of a few natural elements. Designed to quench your thirst

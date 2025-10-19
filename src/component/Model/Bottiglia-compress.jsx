@@ -14,6 +14,8 @@ import { useFrame } from "@react-three/fiber";
 import gsap from "gsap";
 import { useRecoilState } from "recoil";
 import { flavor_atom } from "@/store/flavors_atom";
+
+// vertex shader
 const VERTEX_SHADER = `
 varying vec3 pos;
 varying vec2 vUv;
@@ -24,6 +26,7 @@ void main() {
 }
 `;
 
+// fragment shader
 const FRAGMENT_SHADER = `
   varying vec2 vUv; 
   uniform sampler2D uSourceTexture;
@@ -53,20 +56,28 @@ const FRAGMENT_SHADER = `
 
   }
 `;
+
 export function Model(props) {
   const group = React.useRef();
+
+  const { nodes, materials } = useGLTF("/bottiglia-compress-transformed.glb");
+
+  // store if an animation is in progress
   const isAnimatingRef = useRef(false);
+
+  // store the current tween animation
   const currentTweenRef = useRef(null);
+
+  // queue to hold pending animations
   const animationQueueRef = useRef([]);
 
-  const { nodes, materials, animations } = useGLTF(
-    "/bottiglia-compress-transformed.glb"
-  );
-
+  // initial texture
   const initialTexture = useLoader(
     TextureLoader,
     "texture/ActiveHop_etichetta__01_trail.webp"
   );
+
+  // shader uniforms
   const uniforms = useRef({
     uPixel: { value: 512 },
     uIsPixelated: { value: true },
@@ -77,10 +88,13 @@ export function Model(props) {
 
   const [currentFlavor, setCurrentFlavor] = useRecoilState(flavor_atom);
 
-  const targetRotation = useRef(new THREE.Euler(0, Math.PI / 2, 0)); // current rotation
+  // set current and target rotation and scale for smoooth interaction
+  const targetRotation = useRef(new THREE.Euler(0, Math.PI / 2, 0));
   const currentRotation = useRef(new THREE.Euler(0, Math.PI / 2, 0));
-  const scale = useRef(1); // current scale
-  const targetScale = useRef(1); // desired scale based on mouse
+  const scale = useRef(1);
+  const targetScale = useRef(1);
+
+  // create shader material
   const shaderMaterial = useRef(null);
   const material = new ShaderMaterial();
   material.fragmentShader = FRAGMENT_SHADER;
@@ -88,11 +102,17 @@ export function Model(props) {
   material.uniforms = uniforms.current;
   shaderMaterial.current = material;
 
+  // function to change texture with animation and if there is already an animation then queue it
   const changeTextureTo = useCallback((url) => {
+    // set current target texture as source texture
     uniforms.current.uSourceTexture = { ...uniforms.current.uTargetTexture };
+
+    // load new texture and set it as target texture
     uniforms.current.uTargetTexture = { value: new TextureLoader().load(url) };
     shaderMaterial.current.uniformsNeedUpdate = true;
     uniforms.current.uTextureProgress.value = 0;
+
+    // animate texture progress
     const tween = gsap.to(uniforms.current.uTextureProgress, {
       value: 1,
       duration: 0.25,
@@ -101,21 +121,27 @@ export function Model(props) {
 
   const animateAndChangeTexture = useCallback(
     (url) => {
+      // create aimation timeline for pixelation effect first goes from 512 to 32 then change texture and then from 32 to 512
       const createTimeline = (url) => {
         const tl = gsap.timeline({ paused: true });
-        let isAnimated = false;
+
+        // store if texture has been changed
+        let isTextureChanged = false;
+
+        // on update of timeline check if we need to change texture
+        const timelineUpdateHandler = function () {
+          const progress = this.progress() * 100;
+          if (progress >= 50 && !isTextureChanged) {
+            changeTextureTo(url);
+            isTextureChanged = true;
+          }
+        };
 
         tl.to(uniforms.current.uPixel, {
           value: 32,
           duration: 0.25,
           ease: "expo.out",
-          onUpdate: function () {
-            const progress = this.progress() * 100;
-            if (progress >= 50 && !isAnimated) {
-              changeTextureTo(url);
-              isAnimated = true;
-            }
-          },
+          onUpdate: timelineUpdateHandler,
         }).to(uniforms.current.uPixel, {
           value: 512,
           duration: 0.75,
@@ -123,7 +149,7 @@ export function Model(props) {
           ease: "expo.in",
         });
 
-        // When done, trigger next animation
+        // When done, trigger next animation in animation queue
         tl.eventCallback("onComplete", () => {
           isAnimatingRef.current = false;
           currentTweenRef.current = null;
@@ -178,6 +204,7 @@ export function Model(props) {
       minScale + Math.pow(distanceFromCenter, exponent) * (maxScale - minScale);
   }, []);
 
+  // change texture when currentFlavor changes
   useEffect(() => {
     animateAndChangeTexture(currentFlavor.url);
   }, [currentFlavor, animateAndChangeTexture]);
@@ -185,7 +212,7 @@ export function Model(props) {
   useEffect(() => {
     window.addEventListener("mousemove", mouseMoveHandler);
     return () => window.removeEventListener("mousemove", mouseMoveHandler);
-  }, [mouseMoveHandler]);
+  }, []);
 
   useFrame(() => {
     if (!group.current) return;
@@ -204,7 +231,7 @@ export function Model(props) {
       0,
       currentRotation.current.z
     );
-    // smooth scale
+
     scale.current = THREE.MathUtils.lerp(
       scale.current,
       targetScale.current,

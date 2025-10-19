@@ -1,12 +1,9 @@
 "use client";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import styles from "./3dBottle.module.css";
-
 import { Model } from "@/component/Model/Bottiglia-compress";
-import { OrbitControls } from "@react-three/drei";
-import { DirectionalLight } from "three";
 import { Environment } from "@react-three/drei";
-import { useRef } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 
 function Scene() {
   return (
@@ -18,7 +15,7 @@ function Scene() {
 function Interact() {
   const modelRef = useRef(null);
 
-  useFrame(({ gl, scene, camera, clock }) => {
+  useFrame(({ scene, clock }) => {
     if (!modelRef.current) {
       const [model] = scene.children.filter((child) => child.type == "Group");
       modelRef.current = model;
@@ -32,11 +29,18 @@ function Interact() {
 }
 
 export default function Bottle() {
+  const [cameraPosition, setCameraPosition] = useState([0, 0, 10]);
+
+  useLayoutEffect(() => {
+    if (window.innerWidth < 600) {
+      setCameraPosition([0, 0, 20]);
+    }
+  }, []);
   return (
     <div className={styles.bottle_container}>
       <Canvas
         style={{ height: "100vh", width: "100vw" }}
-        camera={{ position: [0, 0, 10], fov: 30 }}
+        camera={{ position: cameraPosition, fov: 30 }}
       >
         <Environment preset="sunset" />
         <Scene />

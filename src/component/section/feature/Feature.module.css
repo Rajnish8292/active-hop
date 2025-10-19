@@ -1,14 +1,14 @@
 .feature {
-    height: 100vh;
+    height: auto;
     width: 100vw;
     position: relative;
-    overflow: hidden;
 }
 
 .detail {
     position: absolute;
     right: var(--spacing-md);
     top: var(--spacing-md);
+    
     padding: var(--spacing-md);
     border-radius: var(--radius-lg);
     background-color: var(--color-gray);
@@ -16,4 +16,11 @@
     font-size: var(--text-xs);
     line-height: var(--text-xs--line-height);
     font-family: var(--font-mono);
+}
+
+@media screen and (max-width : 600px) {
+    .detail {
+        left: var(--spacing-md);
+        width: calc(100vw - 2 * var(--spacing-md));
+    }
 }

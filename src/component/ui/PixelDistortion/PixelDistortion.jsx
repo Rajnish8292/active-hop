@@ -58,10 +58,19 @@ export default function PixelDistortion() {
   }, []);
 
   return (
-    <div
-      ref={pixelDistortionContainerRef}
-      className={styles.pixel_distortion_container}
-      style={{}}
-    ></div>
+    <div className={styles.pixel_distortion_container}>
+      <div
+        style={{
+          height: "100%",
+          width: "100%",
+          position: "relative",
+          overflow: "hidden",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+        ref={pixelDistortionContainerRef}
+      ></div>
+    </div>
   );
 }
